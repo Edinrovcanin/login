@@ -1,5 +1,4 @@
 import { Schema, Document } from 'mongoose';
-import * as mongoose from 'mongoose';
 
 export interface User extends Document {
     username: string;
@@ -14,5 +13,3 @@ export const UserSchema = new Schema({
     password: { type: String, required: true },
     role: { type: String, required: true, enum: ['user', 'admin', 'superadmin'] },
 });
-
-export const UserModel = mongoose.model<User>('User', UserSchema);

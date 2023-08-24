@@ -1,23 +1,54 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User } from './user.schema';
+import { Controller, Post, Body, Get, Param, Patch, Delete, InternalServerErrorException } from '@nestjs/common';
+import { UsersService } from './users.service';
+import { User } from './user.model'; // Dodajte import za User model
 
 @Controller('users')
 export class UsersController {
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) { }
+    constructor(private readonly usersService: UsersService) { }
 
     @Post('register')
     async registerUser(@Body() userDto: User): Promise<User> {
-        const newUser = new this.userModel(userDto);
-        return await newUser.save();
+        try {
+            return await this.usersService.registerUser(userDto);
+        } catch (error) {
+            console.error('Registration error:', error);
+            throw error;
+        }
     }
 
     @Post('login')
     async loginUser(@Body() userDto: User): Promise<User | null> {
-        return await this.userModel.findOne({
-            email: userDto.email,
-            password: userDto.password,
-        });
+        return await this.usersService.loginUser(userDto);
+    }
+
+    @Patch(':id/role')
+    async setUserRole(@Param('id') userId: string, @Body() roleDto: { role: 'user' | 'admin' | 'superadmin' }): Promise<User | null> {
+        return await this.usersService.setUserRole(userId, roleDto);
+    }
+
+    @Get()
+    async getUsers(): Promise<User[]> {
+        return await this.usersService.getUsers();
+    }
+
+    @Delete(':id')
+    async deleteUser(@Param('id') id: string): Promise<User> {
+        return await this.usersService.deleteUser(id);
+    }
+
+    @Get('admin/users')
+    async getAllUsersForAdmin(): Promise<User[]> {
+        return await this.usersService.getAllUsersForAdmin();
+    }
+
+    @Post('set-superadmin')
+    async setSuperAdminEndpoint(): Promise<string> {
+        try {
+            await this.usersService.setSuperAdmin();
+            return 'Superadmin set successfully';
+        } catch (error) {
+            console.error('Error setting superadmin:', error);
+            throw new InternalServerErrorException('Error setting superadmin');
+        }
     }
 }
