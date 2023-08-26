@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete, InternalServerErrorException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Patch, Delete, InternalServerErrorException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from './user.model'; // Dodajte import za User model
+import { User } from './user.model';
 
 @Controller('users')
 export class UsersController {
@@ -24,6 +24,16 @@ export class UsersController {
     @Patch(':id/role')
     async setUserRole(@Param('id') userId: string, @Body() roleDto: { role: 'user' | 'admin' | 'superadmin' }): Promise<User | null> {
         return await this.usersService.setUserRole(userId, roleDto);
+    }
+
+    @Post(':id/promote') // Promijenjeno u Post
+    async promoteUserToAdmin(@Param('id') userId: string): Promise<User | null> {
+        return await this.usersService.promoteUserToAdmin(userId);
+    }
+
+    @Post(':id/demote') // Promijenjeno u Post
+    async demoteAdminToUser(@Param('id') userId: string): Promise<User | null> {
+        return await this.usersService.demoteAdminToUser(userId);
     }
 
     @Get()

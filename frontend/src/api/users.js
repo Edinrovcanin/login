@@ -28,3 +28,39 @@ export const getUsers = async () => {
         throw error;
     }
 };
+
+export const updateUser = async (userId, updatedData) => {
+    try {
+        const response = await axios.put(`${API_URL}/${userId}`, updatedData);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const promoteUserToAdmin = async (userId) => {
+    try {
+        const response = await axios.post(`${API_URL}/${userId}/promote`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const demoteAdminToUser = async (userId) => {
+    try {
+        const response = await axios.post(`${API_URL}/${userId}/demote`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};

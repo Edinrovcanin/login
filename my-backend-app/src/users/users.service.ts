@@ -42,6 +42,42 @@ export class UsersService {
         }
     }
 
+    async promoteUserToAdmin(userId: string): Promise<User | null> {
+        const user = await this.userModel.findById(userId);
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.role = 'admin';
+
+        try {
+            await user.save();
+            return user;
+        } catch (error) {
+            console.error('Promote to admin error:', error);
+            throw new InternalServerErrorException('Promote to admin error');
+        }
+    }
+
+    async demoteAdminToUser(userId: string): Promise<User | null> {
+        const user = await this.userModel.findById(userId);
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.role = 'user';
+
+        try {
+            await user.save();
+            return user;
+        } catch (error) {
+            console.error('Demote to user error:', error);
+            throw new InternalServerErrorException('Demote to user error');
+        }
+    }
+
     async getUsers(): Promise<User[]> {
         return await this.userModel.find().exec();
     }
