@@ -60,7 +60,7 @@ const App = () => {
       )}
       {/* Ako korisnik ima ulogu, prikazujemo odgovarajući panel */}
       {user && user.role === 'user' && <UserPanel />}
-      {user && user.role === 'admin' && <AdminPanel />}
+      {user && user.role === 'admin' && <AdminPanel user={user} />}
       {user && user.role === 'superadmin' && <SuperAdminPanel />}
     </div>
   );
